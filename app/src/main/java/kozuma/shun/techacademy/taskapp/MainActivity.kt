@@ -1,5 +1,8 @@
 package kozuma.shun.techacademy.taskapp
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -10,7 +13,7 @@ import io.realm.RealmChangeListener
 import io.realm.Sort
 import kotlinx.android.synthetic.main.activity_main.*
 
-const val EXTRA_TASK = "jp.techacademy.taro.kirameki.taskapp.TASK"
+const val EXTRA_TASK = "kozuma.shun.techacademy.taskapp.TASK"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mRealm: Realm
@@ -27,8 +30,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         fab.setOnClickListener{ view ->
-            Snackbar.make(view,"Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            //Snackbar.make(view,"Replace with your own action", Snackbar.LENGTH_LONG)
+             //   .setAction("Action", null).show()
+            val intent = Intent(this@MainActivity, InputActivity::class.java)
+            startActivity(intent)
         }
 
         //Realmの設定
@@ -66,6 +71,17 @@ class MainActivity : AppCompatActivity() {
                 mRealm.beginTransaction()
                 results.deleteAllFromRealm()
                 mRealm.commitTransaction()
+
+                val resultIntent = Intent(applicationContext, TaskAlarmReceiver::class.java)
+                val resultPendingIntent = PendingIntent.getBroadcast(
+                    this@MainActivity,
+                    task.id,
+                    resultIntent,
+                    PendingIntent.FLAG_CANCEL_CURRENT
+                )
+
+                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                alarmManager.cancel(resultPendingIntent)
 
                 reloadListView()
             }
