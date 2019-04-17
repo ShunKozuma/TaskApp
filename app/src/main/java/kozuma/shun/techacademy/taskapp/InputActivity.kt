@@ -57,6 +57,12 @@ class InputActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_input)
 
+        //カテゴリ選択に遷移する
+        category_button.setOnClickListener {
+            val intent = Intent(this@InputActivity, InputCategoryActivity::class.java)
+            startActivity(intent)
+        }
+
 
         // ActionBarを設定する
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
@@ -103,7 +109,7 @@ class InputActivity : AppCompatActivity() {
             val dateString = mYear.toString() + "/" + String.format("%02d", mMonth + 1) + "/" + String.format("%02d", mDay)
             val timeString = String.format("%02d", mHour) + ":" + String.format("%02d", mMinute)
 
-            category_edit_text.setText(mTask!!.category)
+            //category_edit_text.setText(mTask!!.category)
 
             date_button.text = dateString
             times_button.text = timeString
@@ -139,8 +145,8 @@ class InputActivity : AppCompatActivity() {
         val date = calendar.time
         mTask!!.date = date
 
-        val category = category_edit_text.text.toString() //カテゴリの追加
-        mTask!!.category = category //カテゴリの追加
+        //val category = category_edit_text.text.toString() //カテゴリの追加
+        //mTask!!.category = category //カテゴリの追加
 
         realm.copyToRealmOrUpdate(mTask!!)
         realm.commitTransaction()

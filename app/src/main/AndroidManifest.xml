@@ -12,6 +12,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".InputCategoryActivity">
+        </activity>
         <activity
                 android:name=".CategoryActivity"
                 android:label="@string/title_activity_category"

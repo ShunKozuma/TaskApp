@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         //後でTaskクラスに変更する
         //val taskList = mutableListOf("aaa","bbb","ccc")
 
-       if(category_find_text.text.toString().equals("")){
+       //if(category_find_text.text.toString().equals("")){
             //Realmデータベースから、「全てのデータを取得して新しい日時順に並べた結果」を取得
             val taskRealmResults = mRealm.where(Task::class.java).findAll().sort("date", Sort.DESCENDING)
 
@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity() {
 
             //表示を更新するために、アダプターにデータが変更されたことを知らせる
             mTaskAdapter.notifyDataSetChanged()
-        }else{
+        /*}else{
             //Realmデータベースから、/ 条件指定して取得の場合は
             val categoryRealmResults = mRealm.where(Task::class.java).equalTo("category", category_find_text.text.toString()).findAll().sort("date", Sort.DESCENDING)
 
@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
 
             //表示を更新するために、アダプターにデータが変更されたことを知らせる
             mTaskAdapter.notifyDataSetChanged()
-        }
+        }*/
 
 
 
