@@ -52,9 +52,11 @@ class InputActivity : AppCompatActivity() {
     }
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_input)
+
 
         // ActionBarを設定する
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
@@ -101,6 +103,8 @@ class InputActivity : AppCompatActivity() {
             val dateString = mYear.toString() + "/" + String.format("%02d", mMonth + 1) + "/" + String.format("%02d", mDay)
             val timeString = String.format("%02d", mHour) + ":" + String.format("%02d", mMinute)
 
+            category_edit_text.setText(mTask!!.category)
+
             date_button.text = dateString
             times_button.text = timeString
         }
@@ -134,6 +138,9 @@ class InputActivity : AppCompatActivity() {
         val calendar = GregorianCalendar(mYear, mMonth, mDay, mHour, mMinute)
         val date = calendar.time
         mTask!!.date = date
+
+        val category = category_edit_text.text.toString() //カテゴリの追加
+        mTask!!.category = category //カテゴリの追加
 
         realm.copyToRealmOrUpdate(mTask!!)
         realm.commitTransaction()
