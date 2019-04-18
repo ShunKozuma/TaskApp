@@ -6,10 +6,16 @@ import android.os.Bundle
 import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_input_category.*
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import kotlinx.android.synthetic.main.content_input.*
 
 class InputCategoryActivity : AppCompatActivity() {
 
     private var mCategory: Category? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +27,7 @@ class InputCategoryActivity : AppCompatActivity() {
             val intent = Intent(this@InputCategoryActivity, MainActivity::class.java)
             startActivity(intent)
         }
+
     }
 
     private fun addCategory(){
@@ -41,15 +48,16 @@ class InputCategoryActivity : AppCompatActivity() {
                     0
                 }
             mCategory!!.id = identifier
+
         }
 
         val category = category_text.text.toString()
         mCategory!!.name = category
 
-
         realm.copyToRealmOrUpdate(mCategory!!)
         realm.commitTransaction()
 
+        Log.d("Categoryid", mCategory!!.id.toString())
         Log.d("Category", mCategory!!.name)
 
         realm.close()

@@ -54,9 +54,9 @@
             android:layout_height="wrap_content"
             android:id="@+id/category_spinner"
             android:layout_below="@id/date_button"
-    />
+            android:text="カテゴリ"/>
     <Button
-            android:text="カテゴリ選択"
+            android:text="カテゴリ追加"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/category_button"

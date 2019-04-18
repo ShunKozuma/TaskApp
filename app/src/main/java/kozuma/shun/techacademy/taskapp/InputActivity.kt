@@ -9,10 +9,20 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
+import android.system.Os.read
+import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import io.realm.Realm
+import io.realm.RealmResults
+import io.realm.Sort
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_input.*
 import java.util.*
+
+
 
 class InputActivity : AppCompatActivity() {
 
@@ -22,6 +32,10 @@ class InputActivity : AppCompatActivity() {
     private var mHour = 0
     private var mMinute = 0
     private var mTask: Task? = null
+
+    private lateinit var mRealm: Realm
+
+
 
     private val mOnDateClickListener = View.OnClickListener {
         val datePickerDialog = DatePickerDialog(this,
@@ -50,8 +64,6 @@ class InputActivity : AppCompatActivity() {
         addTask()
         finish()
     }
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +97,51 @@ class InputActivity : AppCompatActivity() {
         realm.close()
 
 
+
+
+        //val spinner = findViewById<Spinner>(R.id.spinner)
+
+        mRealm = Realm.getDefaultInstance()
+
+        //read関数でカテゴリデータを全て呼び出し
+        val getCategoryData = read()
+
+        //name用の配列を作成
+        val categoryname = mutableListOf<String>()
+
+        //回してnameを配列に格納
+        getCategoryData.forEach {
+            Log.d("debug", "id :" + it.id.toString() + " name :" + it.name )
+            categoryname.add(it.name)
+        }
+
+        // ArrayAdapter
+        val adapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_item, categoryname)
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        // spinner に adapter をセット
+        // Kotlin Android Extensions
+        category_spinner.adapter = adapter
+
+        // リスナーを登録
+        category_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+
+            //　アイテムが選択された時
+            override fun onItemSelected(parent: AdapterView<*>?,
+                                        view: View?, position: Int, id: Long) {
+                val spinnerParent = parent as Spinner
+                val item = spinnerParent.selectedItem as String
+                // Kotlin Android Extensions
+                //textView.text = item
+            }
+
+            //　アイテムが選択されなかった
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                //
+            }
+        }
+
         if (mTask == null) {
             // 新規作成の場合
             val calendar = Calendar.getInstance()
@@ -113,7 +170,17 @@ class InputActivity : AppCompatActivity() {
 
             date_button.text = dateString
             times_button.text = timeString
+
+            category_spinner.setSelection(mTask!!.categoryId)
+
         }
+
+
+    }
+
+
+    fun read() : RealmResults<Category> {
+        return mRealm.where(Category::class.java).findAll()
     }
 
     private fun addTask() {
@@ -146,7 +213,19 @@ class InputActivity : AppCompatActivity() {
         mTask!!.date = date
 
         //val category = category_edit_text.text.toString() //カテゴリの追加
-        //mTask!!.category = category //カテゴリの追加
+
+        // スピナーで選択したもの
+        val category_selected = category_spinner.selectedItem.toString()
+        Log.d("selected", category_selected)
+
+        //選択したカテゴリのIDを取得
+        val selected_id = mRealm.where(Category::class.java).equalTo("name", category_selected ).findFirst()
+
+        //Log.d("name", selected_id)
+
+        mTask!!.categoryId = selected_id?.id.toString().toInt()
+
+        Log.d("name", mTask!!.categoryId.toString())
 
         realm.copyToRealmOrUpdate(mTask!!)
         realm.commitTransaction()
