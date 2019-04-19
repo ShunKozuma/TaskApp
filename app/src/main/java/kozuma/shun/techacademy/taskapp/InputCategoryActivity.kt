@@ -24,7 +24,7 @@ class InputCategoryActivity : AppCompatActivity() {
 
         done_category.setOnClickListener {
             addCategory()
-            val intent = Intent(this@InputCategoryActivity, MainActivity::class.java)
+            val intent = Intent(this@InputCategoryActivity, InputActivity::class.java)
             startActivity(intent)
         }
 
@@ -49,6 +49,8 @@ class InputCategoryActivity : AppCompatActivity() {
                 }
             mCategory!!.id = identifier
 
+            //
+
         }
 
         val category = category_text.text.toString()
@@ -61,7 +63,6 @@ class InputCategoryActivity : AppCompatActivity() {
         Log.d("Category", mCategory!!.name)
 
         realm.close()
-
 
     }
 }

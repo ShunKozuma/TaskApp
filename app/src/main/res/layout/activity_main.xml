@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <EditText
+        <!--EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -22,7 +22,12 @@
                 android:ems="10"
                 android:id="@+id/category_find_text"
                 android:hint="カテゴリ検索"
-        />
+        /-->
+
+        <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:id="@+id/category_spinner_search" />
         <ListView
                 android:id="@+id/listView1"
                 android:layout_width="match_parent"
@@ -31,12 +36,12 @@
                 android:focusableInTouchMode="true"   />
     </LinearLayout>
 
-    <Button
+    <!--Button
             android:text="検索"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/find"
-            android:layout_gravity="right"/>
+            android:layout_gravity="right"/-->
 
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

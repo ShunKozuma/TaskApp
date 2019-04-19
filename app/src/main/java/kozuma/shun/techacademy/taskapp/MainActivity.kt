@@ -9,16 +9,23 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import android.widget.Spinner
 import io.realm.Realm
 import io.realm.RealmChangeListener
 import io.realm.Sort
 import kotlinx.android.synthetic.main.activity_main.*
-
+import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.content_input.*
 
 
 const val EXTRA_TASK = "kozuma.shun.techacademy.taskapp.TASK"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
+
     private lateinit var mRealm: Realm
     private val mRealmListener = object : RealmChangeListener<Realm>{
         override fun onChange(element: Realm) {
@@ -27,6 +34,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var mTaskAdapter: TaskAdapter
+
+    override fun onResume() {
+        super.onResume()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,11 +111,50 @@ class MainActivity : AppCompatActivity() {
         //アプリ起動時に表示テスト用のタスクを作成する
         //addTaskForTest()
 
+        categoryView()
         reloadListView()
 
-        find.setOnClickListener {
+        /*find.setOnClickListener {
             reloadListView()
         }
+        */
+
+        category_spinner_search.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            //　アイテムが選択された時
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                reloadListView()
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
+
+    }
+
+
+    private fun categoryView(){
+        //read関数でカテゴリデータを全て呼び出し
+        val getCategoryData = mRealm.where(Category::class.java).findAll()
+
+        //name用の配列を作成
+        val categoryname = mutableListOf<String>()
+
+        //回してnameを配列に格納
+        getCategoryData.forEach {
+            Log.d("debug", "id :" + it.id.toString() + " name :" + it.name )
+            categoryname.add(it.name)
+        }
+
+        // ArrayAdapter
+        val adapter = ArrayAdapter(applicationContext, android.R.layout.simple_spinner_item, categoryname)
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        // spinner に adapter をセット
+        // Kotlin Android Extensions
+        category_spinner_search.adapter = adapter
 
     }
 
@@ -114,25 +164,13 @@ class MainActivity : AppCompatActivity() {
         //後でTaskクラスに変更する
         //val taskList = mutableListOf("aaa","bbb","ccc")
 
-       //if(category_find_text.text.toString().equals("")){
-            //Realmデータベースから、「全てのデータを取得して新しい日時順に並べた結果」を取得
-            val taskRealmResults = mRealm.where(Task::class.java).findAll().sort("date", Sort.DESCENDING)
+        if(category_spinner_search.selectedItem == null || category_spinner_search.selectedItem == 0){
+            //Log.d("list", category_spinner_search.selectedItem.toString() )
 
-            //上記の結果をTaskListとしてセットする
-            mTaskAdapter.taskList = mRealm.copyFromRealm(taskRealmResults)
-
-            //mTaskAdapter.taskList = taskList
-
-            //TaskのListView用のアダプタに渡す
-            listView1.adapter = mTaskAdapter
-
-            //表示を更新するために、アダプターにデータが変更されたことを知らせる
-            mTaskAdapter.notifyDataSetChanged()
-        /*}else{
             //Realmデータベースから、/ 条件指定して取得の場合は
-            val categoryRealmResults = mRealm.where(Task::class.java).equalTo("category", category_find_text.text.toString()).findAll().sort("date", Sort.DESCENDING)
+            val categoryRealmResults = mRealm.where(Task::class.java).findAll().sort("date", Sort.DESCENDING)
 
-            Log.d("cate", category_find_text.text.toString())
+            //Log.d("cate", category_find_text.text.toString())
             //上記の結果をTaskListとしてセットする
             mTaskAdapter.taskList = mRealm.copyFromRealm(categoryRealmResults)
 
@@ -143,9 +181,22 @@ class MainActivity : AppCompatActivity() {
 
             //表示を更新するために、アダプターにデータが変更されたことを知らせる
             mTaskAdapter.notifyDataSetChanged()
-        }*/
+        }else{
+            //Realmデータベースから、/ 条件指定して取得の場合は
+            val categoryRealmResults = mRealm.where(Task::class.java).equalTo("categoryId", category_spinner_search.selectedItemId).findAll().sort("date", Sort.DESCENDING)
 
+            //Log.d("cate", category_find_text.text.toString())
+            //上記の結果をTaskListとしてセットする
+            mTaskAdapter.taskList = mRealm.copyFromRealm(categoryRealmResults)
 
+            //mTaskAdapter.taskList = taskList
+
+            //TaskのListView用のアダプタに渡す
+            listView1.adapter = mTaskAdapter
+
+            //表示を更新するために、アダプターにデータが変更されたことを知らせる
+            mTaskAdapter.notifyDataSetChanged()
+        }
 
     }
 

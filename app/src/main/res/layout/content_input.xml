@@ -55,6 +55,7 @@
             android:id="@+id/category_spinner"
             android:layout_below="@id/date_button"
             android:text="カテゴリ"/>
+
     <Button
             android:text="カテゴリ追加"
             android:layout_width="wrap_content"

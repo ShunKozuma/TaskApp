@@ -33,6 +33,8 @@ class InputActivity : AppCompatActivity() {
     private var mMinute = 0
     private var mTask: Task? = null
 
+    private var mCategory: Category? = null
+
     private lateinit var mRealm: Realm
 
 
@@ -62,6 +64,9 @@ class InputActivity : AppCompatActivity() {
 
     private val mOnDoneClickListener = View.OnClickListener {
         addTask()
+            val intent = Intent(this@InputActivity, MainActivity::class.java)
+            startActivity(intent)
+
         finish()
     }
 
@@ -149,6 +154,8 @@ class InputActivity : AppCompatActivity() {
             mDay = calendar.get(Calendar.DAY_OF_MONTH)
             mHour = calendar.get(Calendar.HOUR_OF_DAY)
             mMinute = calendar.get(Calendar.MINUTE)
+
+
         } else {
             // 更新の場合
             title_edit_text.setText(mTask!!.title)
@@ -199,6 +206,9 @@ class InputActivity : AppCompatActivity() {
                     0
                 }
             mTask!!.id = identifier
+
+
+
         }
 
         val title = title_edit_text.text.toString()
@@ -212,25 +222,28 @@ class InputActivity : AppCompatActivity() {
 
         //val category = category_edit_text.text.toString() //カテゴリの追加
 
-        val category_selected: String? = category_spinner.selectedItem.toString()
+        if(category_spinner.selectedItem!=null){
+            val category_selected: String? = category_spinner.selectedItem.toString()
 
-        // スピナーで選択したもの
-        Log.d("selected", category_selected)
+            // スピナーで選択したもの
+            Log.d("selected", category_selected)
 
-        //選択したカテゴリの名前を検索
-        val selected_id = mRealm.where(Category::class.java).equalTo("name", category_selected).findFirst()
+            //選択したカテゴリの名前を検索
+            val selected_id = mRealm.where(Category::class.java).equalTo("name", category_selected).findFirst()
 
-        Log.d("name", selected_id.toString())
+            Log.d("name", selected_id.toString())
 
-        /*if(mTask!!.categoryId.toString().equals("null")){
-            mTask!!.categoryId = 0
-        }else{
+            /*if(mTask!!.categoryId.toString().equals("null")){
+                mTask!!.categoryId = 0
+            }else{
+                mTask!!.categoryId = selected_id?.id.toString().toInt()
+            }
+    */
             mTask!!.categoryId = selected_id?.id.toString().toInt()
-        }
-*/
-        mTask!!.categoryId = selected_id?.id.toString().toInt()
 
-        Log.d("mTaskID", mTask!!.categoryId.toString())
+            Log.d("mTaskID", mTask!!.categoryId.toString())
+        }
+
         realm.copyToRealmOrUpdate(mTask!!)
         realm.commitTransaction()
 
