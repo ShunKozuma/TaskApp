@@ -128,18 +128,17 @@ class InputActivity : AppCompatActivity() {
         category_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
 
             //　アイテムが選択された時
-            override fun onItemSelected(parent: AdapterView<*>?,
-                                        view: View?, position: Int, id: Long) {
-                val spinnerParent = parent as Spinner
-                val item = spinnerParent.selectedItem as String
-                // Kotlin Android Extensions
-                //textView.text = item
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
             }
 
             //　アイテムが選択されなかった
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 //
+
             }
+
+
         }
 
         if (mTask == null) {
@@ -174,7 +173,6 @@ class InputActivity : AppCompatActivity() {
             category_spinner.setSelection(mTask!!.categoryId)
 
         }
-
 
     }
 
@@ -214,19 +212,25 @@ class InputActivity : AppCompatActivity() {
 
         //val category = category_edit_text.text.toString() //カテゴリの追加
 
+        val category_selected: String? = category_spinner.selectedItem.toString()
+
         // スピナーで選択したもの
-        val category_selected = category_spinner.selectedItem.toString()
         Log.d("selected", category_selected)
 
-        //選択したカテゴリのIDを取得
-        val selected_id = mRealm.where(Category::class.java).equalTo("name", category_selected ).findFirst()
+        //選択したカテゴリの名前を検索
+        val selected_id = mRealm.where(Category::class.java).equalTo("name", category_selected).findFirst()
 
-        //Log.d("name", selected_id)
+        Log.d("name", selected_id.toString())
 
+        /*if(mTask!!.categoryId.toString().equals("null")){
+            mTask!!.categoryId = 0
+        }else{
+            mTask!!.categoryId = selected_id?.id.toString().toInt()
+        }
+*/
         mTask!!.categoryId = selected_id?.id.toString().toInt()
 
-        Log.d("name", mTask!!.categoryId.toString())
-
+        Log.d("mTaskID", mTask!!.categoryId.toString())
         realm.copyToRealmOrUpdate(mTask!!)
         realm.commitTransaction()
 
@@ -244,4 +248,5 @@ class InputActivity : AppCompatActivity() {
         val alaManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alaManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, resultPendingIntent)
     }
+
 }
