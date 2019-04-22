@@ -135,11 +135,15 @@ class MainActivity : AppCompatActivity(){
 
 
     private fun categoryView(){
+
+
         //read関数でカテゴリデータを全て呼び出し
         val getCategoryData = mRealm.where(Category::class.java).findAll()
 
         //name用の配列を作成
         val categoryname = mutableListOf<String>()
+
+        categoryname.add("全てを表示")
 
         //回してnameを配列に格納
         getCategoryData.forEach {
@@ -164,8 +168,8 @@ class MainActivity : AppCompatActivity(){
         //後でTaskクラスに変更する
         //val taskList = mutableListOf("aaa","bbb","ccc")
 
-        if(category_spinner_search.selectedItem == null || category_spinner_search.selectedItem == 0){
-            //Log.d("list", category_spinner_search.selectedItem.toString() )
+        if(category_spinner_search.selectedItem.toString().equals("全てを表示")){
+            Log.d("list", category_spinner_search.selectedItemId.toString() )
 
             //Realmデータベースから、/ 条件指定して取得の場合は
             val categoryRealmResults = mRealm.where(Task::class.java).findAll().sort("date", Sort.DESCENDING)
@@ -183,7 +187,11 @@ class MainActivity : AppCompatActivity(){
             mTaskAdapter.notifyDataSetChanged()
         }else{
             //Realmデータベースから、/ 条件指定して取得の場合は
+            Log.d("list", category_spinner_search.selectedItemId.toString())
+
             val categoryRealmResults = mRealm.where(Task::class.java).equalTo("categoryId", category_spinner_search.selectedItemId).findAll().sort("date", Sort.DESCENDING)
+
+
 
             //Log.d("cate", category_find_text.text.toString())
             //上記の結果をTaskListとしてセットする

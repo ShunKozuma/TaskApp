@@ -20,6 +20,12 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/done_category"
                 android:text="カテゴリ決定"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/errer"
+                android:text="すでに登録されているカテゴリ名です。" android:visibility="invisible"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

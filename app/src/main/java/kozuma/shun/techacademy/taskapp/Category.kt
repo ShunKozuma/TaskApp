@@ -5,11 +5,11 @@ import io.realm.annotations.PrimaryKey
 import java.io.Serializable
 
 open class Category: RealmObject(), Serializable {
-    var name: String = "全選択"
+    var name: String = ""
 
     //idをプライマーキーとして設定
     @PrimaryKey
-    var id: Int = 1
+    var id: Int = 0
 
 
 

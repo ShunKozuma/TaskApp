@@ -114,6 +114,8 @@ class InputActivity : AppCompatActivity() {
         //name用の配列を作成
         val categoryname = mutableListOf<String>()
 
+        categoryname.add("選択なし")
+
         //回してnameを配列に格納
         getCategoryData.forEach {
             Log.d("debug", "id :" + it.id.toString() + " name :" + it.name )
@@ -222,7 +224,29 @@ class InputActivity : AppCompatActivity() {
 
         //val category = category_edit_text.text.toString() //カテゴリの追加
 
-        if(category_spinner.selectedItem!=null){
+        if(category_spinner.selectedItem.toString().equals("選択なし")){
+            val category_selected: String? = "選択なし"
+
+            // スピナーで選択したもの
+            Log.d("selected", category_selected)
+
+            //選択したカテゴリの名前を検索
+            //val selected_id = mRealm.where(Category::class.java).equalTo("name", category_selected).findFirst()
+
+            //Log.d("name", selected_id.toString())
+
+            /*if(mTask!!.categoryId.toString().equals("null")){
+                mTask!!.categoryId = 0
+            }else{
+                mTask!!.categoryId = selected_id?.id.toString().toInt()
+            }
+    */
+            mTask!!.categoryId = 0
+
+            Log.d("mTaskID", mTask!!.categoryId.toString())
+
+        }else{
+
             val category_selected: String? = category_spinner.selectedItem.toString()
 
             // スピナーで選択したもの
@@ -239,7 +263,7 @@ class InputActivity : AppCompatActivity() {
                 mTask!!.categoryId = selected_id?.id.toString().toInt()
             }
     */
-            mTask!!.categoryId = selected_id?.id.toString().toInt()
+            mTask!!.categoryId = selected_id?.id.toString().toInt()+1
 
             Log.d("mTaskID", mTask!!.categoryId.toString())
         }

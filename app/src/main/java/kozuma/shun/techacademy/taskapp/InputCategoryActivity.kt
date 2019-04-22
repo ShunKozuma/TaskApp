@@ -10,11 +10,14 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import io.realm.Sort
 import kotlinx.android.synthetic.main.content_input.*
 
 class InputCategoryActivity : AppCompatActivity() {
 
     private var mCategory: Category? = null
+
+    var judge: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,11 +27,19 @@ class InputCategoryActivity : AppCompatActivity() {
 
         done_category.setOnClickListener {
             addCategory()
-            val intent = Intent(this@InputCategoryActivity, InputActivity::class.java)
-            startActivity(intent)
+            if(judge == true){
+                errer.visibility = View.VISIBLE
+            }else{
+                val intent = Intent(this@InputCategoryActivity, InputActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+
+
         }
 
     }
+
 
     private fun addCategory(){
         val realm = Realm.getDefaultInstance()
@@ -54,13 +65,27 @@ class InputCategoryActivity : AppCompatActivity() {
         }
 
         val category = category_text.text.toString()
-        mCategory!!.name = category
 
-        realm.copyToRealmOrUpdate(mCategory!!)
+        val category_find = realm.where(Category::class.java).equalTo("name",category).findAll()
+        Log.d("category_find", category_find.toString())
+
+
+        if(category_find.toString().equals("[]")){
+            mCategory!!.name = category
+            realm.copyToRealmOrUpdate(mCategory!!)
+            judge = false
+        }else{
+
+            judge = true
+        }
+
         realm.commitTransaction()
+
 
         Log.d("Categoryid", mCategory!!.id.toString())
         Log.d("Category", mCategory!!.name)
+
+
 
         realm.close()
 
